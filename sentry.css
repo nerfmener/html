@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    background: linear-gradient(45deg, #292929 25%, transparent 25%, transparent 75%, #292929 75%), linear-gradient(45deg, #292929 25%, transparent 25%, transparent 75%, #292929 75%) 0.1875em 0.1875em, radial-gradient(at 50% 0, #484847, #090909); 
+    background-size: 0.З75em 0.З75em, 0.З75em 0.З75em, 100% 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    line-height: 100px;
+}
+h1 {
+    color:blueviolet;
+    text-shadow: 2px 2px 4px black;
+}
+.n {
+    color:royalblue;
+    font-size: 30px;
+    background: linear-gradient(45deg, 0% #484847, 70%  #292929 25%);
+}
+.m {
+    color:lightcoral;
+    font-size: 50px;
+     
+}
+h2 {
+    text-shadow: 2px 2px 4px grey;
+}
+
+a {
+    font-family: system-ui;
+    font-size: 30px;
+    text-decoration: none;
+}
