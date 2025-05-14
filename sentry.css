@@ -9,30 +9,33 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 20px;
-    line-height: 100px;
 }
 h1 {
     color:blueviolet;
     text-shadow: 2px 2px 4px black;
+    
 }
 .n {
     color:royalblue;
     font-size: 30px;
     background: linear-gradient(45deg, 0% #484847, 70%  #292929 25%);
+    
 }
 .m {
     color:lightcoral;
     font-size: 50px;
-     
+    
 }
 h2 {
     text-shadow: 2px 2px 4px grey;
+    
 }
 
 a {
     font-family: system-ui;
     font-size: 30px;
     text-decoration: none;
+    
 }
 button {
     border: none;
@@ -43,4 +46,9 @@ button {
     box-shadow: 0 5px 0 #003CC5;
     width: 70px;
     height: 40px;
+}
+p {
+    color:darkorchid;
+    font-size: 20px;
+    line-height: 0.000000000000000001px;
 }
