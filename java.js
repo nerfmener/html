@@ -1,67 +1,76 @@
+const minUnits = 3, maxUnits = 15;
 
-const minUnits =3, maxUnits=9;
+// Получаем случайное число в диапазоне
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
+// Инициализируем массив чисел для каждой позиции
+let units = [];
 let unitsCount = getRandomInt(minUnits, maxUnits);
-let signs = new Array(unitsCount -1).fill(null); // null - пусто, '+', '-'
+for (let i=0; i<unitsCount; i++){
+  units.push(getRandomInt(1, 15)); // Можно выбрать любой диапазон для чисел
+}
+
+let signs = new Array(unitsCount - 1).fill(null); // знаки между числами
 let currentPlayer = 'player'; // 'player' или 'computer'
 const gameDiv = document.getElementById('game');
 const infoDiv = document.getElementById('info');
 const restartBtn = document.getElementById('restartBtn');
 
-function getRandomInt(min,max){
- return Math.floor(Math.random()*(max-min+1))+min;
+function getRandomInt(min, max) {
+  return Math.floor(Math.random()*(max-min+1))+min;
 }
 
 // Отрисовка игрового поля
-function render(){
- gameDiv.innerHTML = '';
- for(let i=0;i<unitsCount;i++){
-   // Единица
-   const unitSpan = document.createElement('span');
-   unitSpan.className='unit';
-   unitSpan.textContent='1';
-   gameDiv.appendChild(unitSpan);
-   
-   // Если не последняя единица - рисуем знак
-   if(i < unitsCount -1){
-     const signSpan = document.createElement('span');
-     signSpan.className='sign';
-     
-     if(signs[i] === null){
-       signSpan.classList.add('empty');
-       signSpan.textContent='?';
-       if(currentPlayer === 'player'){
-         signSpan.style.cursor = 'pointer';
-         signSpan.title = 'Кликните чтобы выбрать знак (+ или -)';
-         signSpan.addEventListener('click', () => playerChooseSign(i));
-       } else {
-         signSpan.style.cursor = 'default';
-         signSpan.title = '';
-       }
-     } else {
-       signSpan.textContent=signs[i];
-       if(currentPlayer === 'computer' && signs[i] !== null){
-         signSpan.classList.add('computer');
-       } else {
-         signSpan.classList.remove('computer');
-       }
-       signSpan.style.cursor='default';
-       signSpan.title='';
-     }
-     
-     gameDiv.appendChild(signSpan);
-   }
- }
+function render() {
+  gameDiv.innerHTML = '';
+  for(let i=0;i<unitsCount;i++){
+    // Число
+    const unitSpan = document.createElement('span');
+    unitSpan.className='unit';
+    unitSpan.textContent=units[i];
+    gameDiv.appendChild(unitSpan);
+    
+    // Если не последняя единица - рисуем знак
+    if(i < unitsCount -1){
+      const signSpan = document.createElement('span');
+      signSpan.className='sign';
+      
+      if(signs[i] === null){
+        signSpan.classList.add('empty');
+        signSpan.textContent='?';
+        if(currentPlayer === 'player'){
+          signSpan.style.cursor = 'pointer';
+          signSpan.title = 'Кликните чтобы выбрать знак (+ , - или *)';
+          signSpan.addEventListener('click', () => playerChooseSign(i));
+        } else {
+          signSpan.style.cursor = 'default';
+          signSpan.title = '';
+        }
+      } else {
+        signSpan.textContent=signs[i];
+        if(currentPlayer === 'computer' && signs[i] !== null){
+          signSpan.classList.add('computer');
+        } else {
+          signSpan.classList.remove('computer');
+        }
+        signSpan.style.cursor='default';
+        signSpan.title='';
+      }
+      
+      gameDiv.appendChild(signSpan);
+    }
+  }
 }
 
-// Ход игрока - выбор знака на позиции i
+// Ход игрока
 function playerChooseSign(i){
  if(currentPlayer !== 'player') return;
 
- // Предлагаем выбрать + или -
- const choice = prompt("Выберите знак для позиции " + (i+1) + " (введите + или -):", "+");
- if(choice !== '+' && choice !== '-'){
-   alert("Пожалуйста, введите только '+' или '-'");
+ const choice = prompt("Выберите знак для позиции " + (i+1) + " (введите + , - или *):", "+");
+ if(choice !== '+' && choice !== '-' && choice !== '*'){
+   alert("Пожалуйста, введите только '+', '-' или *");
    return;
  }
 
@@ -72,12 +81,11 @@ function playerChooseSign(i){
 
  render();
 
-setTimeout(computerTurn,500);
+ setTimeout(computerTurn,500);
 }
 
-// Ход компьютера - выбирает случайный пустой знак и ставит + или -
+// Ход компьютера
 function computerTurn(){
- // Находим все пустые позиции
  const emptyIndices = [];
  for(let i=0;i<signs.length;i++){
    if(signs[i] === null) emptyIndices.push(i);
@@ -88,11 +96,8 @@ function computerTurn(){
    return;
  }
 
- // Компьютер выбирает случайный индекс из пустых
  const chosenIndex = emptyIndices[getRandomInt(0, emptyIndices.length -1)];
-
- // Компьютер выбирает случайный знак
- const compSign = Math.random() <0.5 ? '+' : '-';
+ const compSign = Math.random() <0.5 ?  '+' : '-';
 
  signs[chosenIndex] = compSign;
 
@@ -105,44 +110,38 @@ function computerTurn(){
  checkIfGameOver();
 }
 
-// Проверяем закончилась ли игра (все знаки расставлены)
+// Проверка окончания игры
 function checkIfGameOver(){
  if(signs.every(s => s !== null)){
    finishGame();
  }
 }
 
-// Вычисляем итоговое значение выражения вида:
-// например для единиц и знаков:
-// "1 + 1 - 1 + ..."
-// вычисляем результат слева направо
+// Вычисление результата
+function calculateResult() {
+  let result = units[0];
 
-function calculateResult(){
- let result=1;
-
- for(let i=0;i<signs.length;i++){
-   let nextUnit=1;
-
-   if(signs[i]==='+'){
-     result += nextUnit;
-   } else if(signs[i]==='-'){
-     result -= nextUnit;
-   } else {
-     // Если вдруг есть пустой знак (не должно быть)
-     throw new Error("Не все знаки расставлены!");
-   }
- }
-
- return result;
+  for(let i=0; i<signs.length; i++){
+    if(signs[i] === '+'){
+      result += units[i+1];
+    } else if(signs[i] === '-'){
+      result -= units[i+1];}
+      else if(signs[i] === '*'){
+        result *= units[i+1];
+    } else {
+      throw new Error("Не все знаки расставлены!");
+    }
+  }
+  return result;
 }
 
-function finishGame(){
+function finishGame() {
  const res=calculateResult();
- let msg=`Итоговое выражение:\n`;
+ let msg='';
 
+ // Формируем строку выражения
  for(let i=0;i<unitsCount;i++){
-   msg += '1 ';
-   
+   msg += units[i] + ' ';
    if(i < signs.length){
      msg += signs[i] + ' ';
    }
@@ -159,20 +158,22 @@ function finishGame(){
  infoDiv.textContent=msg.replace(/\n/g,'\n');
 
  currentPlayer=null;
-
  restartBtn.style.display='inline-block';
 }
 
+// Обработчик перезапуска
 restartBtn.addEventListener('click', () => {
  unitsCount=getRandomInt(minUnits,maxUnits);
+ units = [];
+ for(let i=0; i<unitsCount; i++){
+   units.push(getRandomInt(1,15));
+ }
  signs=new Array(unitsCount-1).fill(null);
  currentPlayer='player';
- infoDiv.textContent='Выберите знак между единицами. Вы ходите первым.';
+ infoDiv.textContent='Выберите знак между числами.';
  restartBtn.style.display='none';
  render();
 });
-const numSpan = document.createElement('span');
-    numSpan.className = 'number';
-    numSpan.textContent = numbers[i];
-    gameDiv.appendChild(numSpan);
+
 render();
+
