@@ -171,5 +171,8 @@ restartBtn.addEventListener('click', () => {
  restartBtn.style.display='none';
  render();
 });
-
+const numSpan = document.createElement('span');
+    numSpan.className = 'number';
+    numSpan.textContent = numbers[i];
+    gameDiv.appendChild(numSpan);
 render();
